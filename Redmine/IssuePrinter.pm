@@ -3,6 +3,7 @@ package IssuePrinter;
 use strict;
 use warnings;
 use Term::ANSIColor;
+use Term::ReadKey;
 
 sub new {
     my $class = shift;
@@ -51,19 +52,37 @@ sub selectPrevious {
 }
 
 sub printLine {
-    for( $a = 0; $a < 100; $a = $a + 1 ) {
-        print "-";
+    my ( $wchar, $hchar, $wpixels, $hpixels ) = GetTerminalSize();
+
+    print "┌";
+    for( $a = 0; $a < $wchar - 2; $a = $a + 1 ) {
+        print "─";
     }
+    print "┐";
+
+    print "\n";
+}
+
+sub printEndLine {
+    my ( $wchar, $hchar, $wpixels, $hpixels ) = GetTerminalSize();
+
+    print "└";
+    for( $a = 0; $a < $wchar - 2; $a = $a + 1 ) {
+        print "─";
+    }
+    print "┘";
 
     print "\n";
 }
 
 sub printBorder {
-    print "|";
-    for( $a = 0; $a < 98; $a = $a + 1 ) {
+    my ( $wchar, $hchar, $wpixels, $hpixels ) = GetTerminalSize();
+
+    print "│";
+    for( $a = 0; $a < $wchar - 2; $a = $a + 1 ) {
         print " ";
     }
-    print "|";
+    print "│";
     print "\n";
 }
 
@@ -97,6 +116,8 @@ sub dynamic {
     
     my $index = 0;
 
+    my ( $wchar, $hchar, $wpixels, $hpixels ) = GetTerminalSize();
+
     foreach (@issues) {
         $self->printBorder();
         my $priority = $_->{priority}->{name};
@@ -126,21 +147,21 @@ sub dynamic {
 
         print sprintf "%-10s", $priority;
 
-        if (length($_->{subject}) > 76) {
-            print substr($_->{subject}, 0, 76);
+        if (length($_->{subject}) > ($wchar - 17) ) {
+            print substr($_->{subject}, 0, $wchar - 24);
             print "...";
         } else {
-            print sprintf ("%-79s", $_->{subject});
+            print sprintf ("%-" . ($wchar - 21). "s", $_->{subject});
         }
 
         print color('reset');
-        print " |";
+        print " │";
         print "\n";
         
     }
 
     $self->printBorder();
-    $self->printLine();
+    $self->printEndLine();
 
     print "\n";
 
