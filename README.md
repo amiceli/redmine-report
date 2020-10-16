@@ -41,5 +41,3 @@ To run binary file :
     --url=<redmine-url> \
     --username=<redmine-username>
 ~~~
-
-**NB** : currently open commands run `open <url>`, it works on MacOS only.
