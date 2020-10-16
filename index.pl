@@ -12,42 +12,37 @@ use Redmine::IssuePrinter;
 my $url;
 my $token;
 my $username;
-my $limit;
+my $limit = 10;
 
-GetOptions (
-    'token=s' => \$token, 
-    'url=s' => \$url, 
+GetOptions(
+    'token=s'    => \$token,
+    'url=s'      => \$url,
     'username=s' => \$username,
-    'limit=i' => \$limit,
+    'limit=i'    => \$limit,
 );
 
-if (not defined $limit) {
-    $limit = 10;
-}
-
-if (not defined $token) {
+if ( not defined $token ) {
     die "Token parameter is missing : --token=<your-redmine-token>\n";
 }
 
-if (not defined $url) {
+if ( not defined $url ) {
     die "Url parameter is missing : --token=<your-redmine-url>\n";
 }
 
-if (not defined $username) {
+if ( not defined $username ) {
     die "Username parameter is missing : --username=<your-redmine-username>\n";
 }
 
-my $config = new Config($url, $token, $username);
-my $api = new Api($config);
+my $config = new Config( $url, $token, $username );
+my $api    = new Api($config);
 
-my $userRepository = new UserRepository($api, $username);
-my $userId = $userRepository->getUserId();
+my $userRepository = new UserRepository( $api, $username );
+my $userId         = $userRepository->getUserId();
 
-my $issueRepository = new IssueRepository($api, $userId, $limit);
-my @issues = $issueRepository->getIssues();
+my $issueRepository = new IssueRepository( $api, $userId, $limit );
+my @issues          = $issueRepository->getIssues();
 
 my $printer = new IssuePrinter(@issues);
 
 $printer->display();
-
 

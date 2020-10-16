@@ -22,10 +22,6 @@ sub getIssues {
 
     my @issues = @{ $response->{issues} };
 
-    # foreach (@issues) {
-    #     print $_->{id}, "\n";
-    # }
-
     return @issues;
 }
 
